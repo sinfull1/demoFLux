@@ -1,5 +1,7 @@
-package com.example.demo;
+package com.exmaple.demo;
 
+
+import com.example.demo.FileEventProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,33 +10,30 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxProcessor;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 
-
+@CrossOrigin(value = {"*"}, exposedHeaders = {"Content-Disposition", "Content-Type"})
 @RestController
-@Component
-public class RenameController {
+public class ReaderController {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(RenameController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReaderController.class);
 
-    String basePath = "CHANGE_TO_PATH";
+    String basePath = "C:\\Users\\micro\\IdeaProjects\\react-spring-boot\\connect-server\\src\\main\\resources\\";
 
 
     private final FileEventProcessor fileEventProcessor;
 
     @Autowired
-    public RenameController(FileEventProcessor fileEventProcessor) {
+    public ReaderController(FileEventProcessor fileEventProcessor) {
         this.fileEventProcessor=fileEventProcessor;
     }
 
@@ -48,9 +47,8 @@ public class RenameController {
 
     @GetMapping(path = "/reader", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Object> reader()  {
-        FluxProcessor<Object,Object> s = fileEventProcessor.getProcessor( UUID.randomUUID().toString());
-        return s.doOnCancel(()->{
-            fileEventProcessor.cleanProcessor(s);});
+        return  fileEventProcessor.getFlux();
+
     }
 
 }
