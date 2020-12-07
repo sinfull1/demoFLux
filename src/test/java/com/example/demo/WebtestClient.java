@@ -1,4 +1,4 @@
-package connect.connectserver.units;
+package com.example.demo;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
