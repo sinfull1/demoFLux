@@ -1,4 +1,4 @@
-package com.exmaple.demo;
+package  com.example.demo;
 
 
 import com.example.demo.FileEventProcessor;
@@ -10,6 +10,7 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import java.nio.file.Paths;
 
 @CrossOrigin(value = {"*"}, exposedHeaders = {"Content-Disposition", "Content-Type"})
 @RestController
+@Component
 public class ReaderController {
 
 
