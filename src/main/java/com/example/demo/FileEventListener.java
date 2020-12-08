@@ -30,34 +30,33 @@ public class FileEventListener implements ApplicationListener<FileEvent> {
         File files = new File(fileEvent.getSource().toString());
         Path p = Paths.get(files.getAbsolutePath());
         AtomicLong d = new AtomicLong();
-        try {
-            checkFileGrowth(files);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        checkFileGrowth(files);
         DataBufferFactory dbf = new DefaultDataBufferFactory();
-
         Flux<DataBuffer> buffer = DataBufferUtils.read(p, dbf, 256*64);
         Flux<String> stringFlux = buffer.flatMap(dataBuffer -> {
             byte[] bytes = new byte[dataBuffer.readableByteCount()];
             dataBuffer.read(bytes);
             DataBufferUtils.release(dataBuffer);
-            return Mono.just(new String(bytes, StandardCharsets.UTF_8)+d.incrementAndGet());
+            return Mono.just(new String(bytes, StandardCharsets.UTF_8));
         });
         stringFlux.subscribe(k->eventProcessor.getSink().emitNext(k, Sinks.EmitFailureHandler.FAIL_FAST));
         stringFlux.blockLast();
     }
 
-    private void checkFileGrowth(File p) throws InterruptedException {
-        long len1 =1;
-        long len2 =2;
-        while(len1!=len2) {
-            len1 = p.length();
-            Thread.sleep(100);
-            len2 = p.length();
-            System.out.println(len1);
-            System.out.println(len2);
-        }
+    private void checkFileGrowth(File p)  {
+
+
+            while ( !p.renameTo(p)) {
+                try {
+                    System.out.println("waiting");
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
     }
 
 }

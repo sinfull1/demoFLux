@@ -13,9 +13,7 @@ import reactor.core.publisher.*;
 @Component
 public class FileEventProcessor {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
-    Sinks.Many<Object> replaySink = Sinks.many().replay().limit(1);
+    Sinks.Many replaySink = Sinks.many().multicast().onBackpressureBuffer();
 
     public FileEventProcessor() {
     }
